@@ -35,3 +35,13 @@ make install
 echo /usr/local/lib > /etc/ld.so.conf.d/opencv.conf
 ldconfig -v
 ```
+
+
+## Install OpenCV for macos
+
+```bash
+brew install -v cmake
+brew install pkg-config
+brew tap homebrew/science
+brew install opencv
+```
