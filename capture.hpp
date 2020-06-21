@@ -24,6 +24,7 @@ public:
 
     // filters
     void beautifulSkinFilter();
+    void gammaFilter(double);
     void noiseReduction();
 
     // getter

@@ -2,42 +2,64 @@
 
 #include "main.hpp"
 
-#define APP_NAME "VIDUX"
-#define MONITOR_WINDOW_NAME "VIDUX - Monitor(Master)"
 
-using namespace cv;
+#define APP_NAME "VIDUX"
+// #define MONITOR_WINDOW_NAME "VIDUX - Monitor(Master)"
+#define MONITOR_WINDOW_NAME "VIDUX - Monitor"
+#define MAX_CAPTURE_DEVICE 3
+
 
 int main(int argc, char *argv[])
 {
-    // Open the capture device
-    Capture capture;
 
-    if(capture.initDevice(0))
+    // Open the capture device
+    Capture captures[MAX_CAPTURE_DEVICE];
+
+    if(captures[0].initDevice(2))
     {
         // if open failed it exit
         return -1;
     }
 
+    if(captures[1].initDevice(0))
+    {
+        // if open failed it exit
+        return -1;
+    }
+
+    int devices = 2;
+
 
     while(true)
     {
-        capture.read();
-
-        cv::imshow("before", capture.getFrame());
-
-
-        // ----------------------------------------------------------------
-        // ビデオフィルタ
-        // ----------------------------------------------------------------
-        // ノイズリダクション
-        capture.beautifulSkinFilter();
+        for (int i = 0; i < devices; i++)
+        {
+            captures[i].read();
+            // cv::imshow("before", captures[i].getFrame());
 
 
-        // ----------------------------------------------------------------
-        // 描画
-        // ----------------------------------------------------------------
-        // モニター表示
-        cv::imshow(MONITOR_WINDOW_NAME, capture.getFrame());
+            // ----------------------------------------------------------------
+            // ビデオフィルタ
+            // ----------------------------------------------------------------
+            // ノイズリダクション
+            captures[i].beautifulSkinFilter();
+            captures[i].gammaFilter(1.1);
+
+
+            // ----------------------------------------------------------------
+            // 描画lutMat
+            // ----------------------------------------------------------------
+            // モニター表示
+            std::string windowName = MONITOR_WINDOW_NAME;
+
+            std::ostringstream ossDeviceId;
+            ossDeviceId << i;
+            windowName += "(Device: " + ossDeviceId.str() + ")";
+
+            cv::imshow(windowName, captures[i].getFrame());
+
+
+        }
 
 
 
@@ -51,7 +73,7 @@ int main(int argc, char *argv[])
         }
         else if(key == 's')
         {
-            cv::imwrite("vidux-capture.jpg", capture.getFrame());
+            cv::imwrite("vidux-master.jpg", captures[0].getFrame());
         }
     }
 
@@ -59,7 +81,10 @@ int main(int argc, char *argv[])
     cv::destroyAllWindows();
 
     // キャプチャデバイスを開放
-    capture.closeDevice();
+    for (int i = 0; i < devices; i++)
+    {
+        captures[i].closeDevice();
+    }
 
     return 0;
 
