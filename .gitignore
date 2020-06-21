@@ -33,6 +33,7 @@
 
 # Project defined
 build/
+vidux
 
 # User defined
 .vscode/
