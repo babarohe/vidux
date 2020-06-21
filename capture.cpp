@@ -11,8 +11,7 @@
 
 bool Capture::initDevice(int index)
 {
-    std::cout << "Open Device" << std::endl;
-    cap = new cv::VideoCapture(0);
+    cap = new cv::VideoCapture(index);
     // cap->set(cv::CAP_PROP_FPS, CAPTURE_FRAME_RATE_JPN_EAST);
     // cap->set(cv::CAP_PROP_FRAME_WIDTH, 1280);
     // cap->set(cv::CAP_PROP_FRAME_HEIGHT, 720);
