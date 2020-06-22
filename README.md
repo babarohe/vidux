@@ -1,7 +1,11 @@
 # video-mux
 
+## Supported environment
 
-## Install OpenCV for Ubuntu 18.04
+Ubuntu: Ubuntu 18.04
+macOS: macOS Catalina
+
+## Install OpenCV for Ubuntu
 
 ```bash
 apt-get -y update
@@ -36,12 +40,49 @@ echo /usr/local/lib > /etc/ld.so.conf.d/opencv.conf
 ldconfig -v
 ```
 
+## Install Qt5 for Ubuntu
 
-## Install OpenCV for macos
+```bash
+sudo apt-get -y install libfontconfig1
+sudo apt-get -y install mesa-common-dev
+sudo apt-get -y install libglu1-mesa-dev
+
+wget http://download.qt.io/official_releases/qt/5.14/5.14.2/qt-opensource-linux-x64-5.14.2.run
+chmod +x qt-opensource-linux-x64-5.14.2.run
+./qt-opensource-linux-x64-5.14.2.run
+
+# http://download.qt.io/official_releases/qt/5.14/5.14.2/qt-opensource-mac-x64-5.14.2.dmg
+
+```
+
+https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+
+
+## Install Gtk3
+
+```bash
+sudo apt install libgtk-3-dev
+```
+
+
+## Install v4l2 loopback
+
+```bash
+sudo apt install -y v4l2loopback-dkms
+```
+
+## Install OpenCV for macOS
 
 ```bash
 brew install -v cmake
 brew install pkg-config
 brew tap homebrew/science
 brew install opencv
+```
+
+## Install Qt5 for macOS
+
+```bash
+
+
 ```

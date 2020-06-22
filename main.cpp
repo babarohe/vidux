@@ -12,11 +12,21 @@
 int main(int argc, char *argv[])
 {
 
+
+
+
+    int index = 0;
+
+    if (argc > 1)
+    {
+        index = atoi(argv[1]);
+    }
+
     // Open the capture device
     Capture captures[MAX_CAPTURE_DEVICE];
     int devices = 0;
 
-    if(captures[0].initDevice(2))
+    if(captures[0].initDevice(index))
     {
         // if open failed it exit
         return -1;
