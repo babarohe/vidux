@@ -1,5 +1,13 @@
 # video-mux
 
+
+## Required
+
+- OpenCV 3.4
+- Gtk+3.x
+- v4l2loopback-dkms
+
+
 ## Supported environment
 
 Ubuntu: Ubuntu 18.04

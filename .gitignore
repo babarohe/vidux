@@ -33,6 +33,7 @@
 
 # Project defined
 build/
+lib/
 vidux
 
 # Capture files

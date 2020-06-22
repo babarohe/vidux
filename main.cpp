@@ -2,7 +2,6 @@
 
 #include "main.hpp"
 
-
 #define APP_NAME "VIDUX"
 // #define MONITOR_WINDOW_NAME "VIDUX - Monitor(Master)"
 #define MONITOR_WINDOW_NAME "VIDUX - Monitor"
@@ -11,10 +10,6 @@
 
 int main(int argc, char *argv[])
 {
-
-
-
-
     int index = 0;
 
     if (argc > 1)
@@ -40,6 +35,14 @@ int main(int argc, char *argv[])
     // }
     // devices++;
 
+    // ----------------------------------------------------------------
+    // 仮想デバイス初期化
+    // ----------------------------------------------------------------
+    // v4l2sink sink;
+
+
+    cv::Mat masterFrame;
+    // int r = sink.init(masterFrame.cols, masterFrame.rows, masterFrame.channels() == 1 ? v4l2sink::GRAY: v4l2sink::RGB);
 
 
     while(true)
@@ -80,10 +83,15 @@ int main(int argc, char *argv[])
 
             cv::imshow(windowNameRaw, captures[i].getFrame(FRAME_ID_RAW_INPUT));
 
-
+            captures[i].getFrame().copyTo(masterFrame);
 
         }
 
+
+        // マスターフレーム表示
+        cv::imshow("VIDUX - Monitor(Master)", masterFrame);
+
+        // r = sink.write((const char*)masterFrame.data, masterFrame.cols * masterFrame.rows * masterFrame.channels());
 
 
         // ----------------------------------------------------------------
