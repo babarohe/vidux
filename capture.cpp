@@ -49,16 +49,96 @@ void Capture::read()
  */
 void Capture::beautifulSkinFilter()
 {
+    // Copy to Temporary buffer
+    bufferMainFrame.copyTo(bufferTemporaryFrame);
+
     // Execute bilateral filter
-    cv::bilateralFilter(bufferMainFrame, bufferTemporaryFrame, 4, 72, 6, 4);
-
-    // Copy from Temporary buffer
-    bufferTemporaryFrame.copyTo(bufferMainFrame);
-
-    // cv::cvtColor(bufferTemporaryFrame, bufferMainFrame, cv::COLOR_RGB2RGBA);
+    cv::bilateralFilter(bufferTemporaryFrame, bufferMainFrame, 4, 72, 6, 4);
 
 }
 
+/**
+ * @fn
+ * Ruddy filter
+ * @param void
+ * @return void
+ */
+void Capture::ruddyFilter()
+{
+    // 血色感出すフィルター
+    specificHueFilter();
+
+}
+
+
+void Capture::specificHueFilter()
+{
+    // Convert color to HLS color
+    cv::cvtColor(bufferMainFrame, bufferTemporaryFrame, cv::COLOR_BGR2HLS);
+
+    int cols = bufferTemporaryFrame.cols;
+    int rows = bufferTemporaryFrame.rows;
+
+    int adjustHue = 0;
+    int adjustLightness = -30;
+    int adjustSaturation = 0;
+
+    double centerHue = 7.0;
+    double hueRange = 12.0;
+
+    double minHue = centerHue - hueRange / 2.0;
+    double maxHue = centerHue + hueRange / 2.0;
+
+    int minLightness = 20;
+    int maxLightness = 255;
+
+    int minSaturation = 0;
+    int maxSaturation = 200;
+
+
+    // Mat to vector
+    std::vector<cv::Mat> hlsChannels;
+    cv::split(bufferTemporaryFrame, hlsChannels);
+
+
+    int hueValue;
+    int lightnessValue;
+    int saturationValue;
+
+    for (int row = 0; row < rows; row++) {
+        // Horizontal scan
+        for (int col = 0; col < cols; col++) {
+            // Vertical scan
+            hueValue = static_cast<int>(hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col));
+            lightnessValue = static_cast<int>(hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col));
+            saturationValue = static_cast<int>(hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col));
+
+
+            if (((minHue <= hueValue) && (hueValue <= maxHue))) {
+                // Inrange hue
+                if (((minLightness <= lightnessValue) && (lightnessValue <= maxLightness))) {
+                    // Inrange Lightness
+                    if (((minSaturation <= saturationValue) && (saturationValue <= maxSaturation))) {
+                        // hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(hueValue + adjustHue, 0, HLS_HUE_MAX_VALUE);
+                        // hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(lightnessValue + adjustLightness, 0, HLS_LIGHTNESS_MAX_VALUE);
+                        // hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(saturationValue + adjustSaturation, 0, HLS_SATURATION_MAX_VALUE);
+
+                        hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(45, 0, HLS_HUE_MAX_VALUE);
+                        hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(127, 0, HLS_LIGHTNESS_MAX_VALUE);
+                        hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(255, 0, HLS_SATURATION_MAX_VALUE);
+                    }
+                }
+            }
+        }
+    }
+
+    // Writeback to bufferTemporary
+    cv::merge(hlsChannels, bufferTemporaryFrame);
+
+    // Convert color and write back
+    cv::cvtColor(bufferTemporaryFrame, bufferMainFrame, cv::COLOR_HLS2BGR);
+
+}
 
 /**
  * @fn
@@ -128,4 +208,16 @@ cv::Mat Capture::getFrame(int frameId)
     {
         return bufferMainFrame;
     }
+}
+
+
+int Capture::_utilCutRange(int value, int min, int max)
+{
+    // Upper
+    value = std::max(min, value);
+
+    // Lower
+    value = std::min(max, value);
+
+    return value;
 }

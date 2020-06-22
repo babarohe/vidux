@@ -61,8 +61,11 @@ int main(int argc, char *argv[])
             // 美肌フィルタ
             captures[i].beautifulSkinFilter();
 
+            // 血色フィルタ
+            captures[i].ruddyFilter();
+
             // ガンマ調整
-            captures[i].gammaFilter(2.0);
+            captures[i].gammaFilter(1.15);
 
 
             // ----------------------------------------------------------------

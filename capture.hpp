@@ -12,6 +12,15 @@
 #define FRAME_ID_BUFFER_TEMPORARY 2
 #define FRAME_ID_OUTPUT 3
 
+#define HLS_CHANNEL_HUE 0
+#define HLS_CHANNEL_LIGHTNESS 1
+#define HLS_CHANNEL_SATURATION 2
+
+#define HLS_HUE_MAX_VALUE 180
+#define HLS_LIGHTNESS_MAX_VALUE 255
+#define HLS_SATURATION_MAX_VALUE 255
+
+
 class Capture
 {
 private:
@@ -20,6 +29,7 @@ private:
     cv::Mat bufferMainFrame;
     cv::Mat bufferTemporaryFrame;
     cv::Mat outputFrame;
+    int _utilCutRange(int, int, int);
 
 public:
     // Basic functions
@@ -29,8 +39,10 @@ public:
     void read();
 
     // filters
-    void beautifulSkinFilter();
     void gammaFilter(double);
+    void beautifulSkinFilter();
+    void ruddyFilter();
+    void specificHueFilter();
     void noiseReductionFilter();
 
     // getter
