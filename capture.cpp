@@ -100,7 +100,7 @@ void Capture::gammaFilter(double gamma)
  */
 cv::Mat Capture::getFrame()
 {
-    return bufferTemporaryFrame;
+    return bufferMainFrame;
 }
 
 
@@ -126,6 +126,6 @@ cv::Mat Capture::getFrame(int frameId)
     }
     else if (frameId == FRAME_ID_OUTPUT)
     {
-        return bufferTemporaryFrame;
+        return bufferMainFrame;
     }
 }
