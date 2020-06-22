@@ -1,11 +1,5 @@
-#include "opencv2/opencv.hpp"
 
-#include "main.hpp"
-
-#define APP_NAME "VIDUX"
-// #define MONITOR_WINDOW_NAME "VIDUX - Monitor(Master)"
-#define MONITOR_WINDOW_NAME "VIDUX - Monitor"
-#define MAX_CAPTURE_DEVICE 3
+#include "vidux-capture-main.hpp"
 
 
 int main(int argc, char *argv[])
@@ -18,89 +12,70 @@ int main(int argc, char *argv[])
     }
 
     // Open the capture device
-    Capture captures[MAX_CAPTURE_DEVICE];
+    Capture capture;
     int devices = 0;
 
-    if(captures[0].initDevice(index))
+    if(capture.initDevice(index))
     {
         // if open failed it exit
         return -1;
     }
-    devices++;
 
-    // if(captures[1].initDevice(2))
-    // {
-    //     // if open failed it exit
-    //     return -1;
-    // }
-    // devices++;
 
     // ----------------------------------------------------------------
-    // 仮想デバイス初期化
+    // ウィンドウ事前処理
     // ----------------------------------------------------------------
-    // v4l2sink sink;
+    // デバイスIDの文字列取得
+    std::ostringstream ossDeviceId;
+    ossDeviceId << index;
+
+    // 入力ウィンドウ名
+    std::string windowNameInput = APPLICATION_NAME;
+    windowNameInput += " [FRAME_ID_INPUT(0x00), dev=\"/dev/video" + ossDeviceId.str() + "\"]";
+
+    // 出力ウィンドウ名
+    std::string windowNameBufferMain = APPLICATION_NAME;
+    windowNameBufferMain += " [FRAME_ID_BUFFER_MAIN(0x01), dev=\"/dev/video" + ossDeviceId.str() + "\"]";
 
 
-    cv::Mat masterFrame;
-    // int r = sink.init(masterFrame.cols, masterFrame.rows, masterFrame.channels() == 1 ? v4l2sink::GRAY: v4l2sink::RGB);
-
+    // ----------------------------------------------------------------
+    // ウィンドウ生成
+    // ----------------------------------------------------------------
     cv::namedWindow("ruddyFilter()");
     cv::namedWindow("toneUpSkinFilter()");
+    cv::namedWindow(windowNameInput);
+    cv::namedWindow(windowNameBufferMain);
 
 
     while(true)
     {
-        for (int i = 0; i < devices; i++)
-        {
-            // ----------------------------------------------------------------
-            // ビデオ取得
-            // ----------------------------------------------------------------
-            captures[i].read();
+        // ----------------------------------------------------------------
+        // ビデオ取得
+        // ----------------------------------------------------------------
+        capture.read();
 
 
-            // ----------------------------------------------------------------
-            // ビデオフィルタ
-            // ----------------------------------------------------------------
-            // 血色フィルタ
-            captures[i].ruddyFilter();
+        // ----------------------------------------------------------------
+        // ビデオフィルタ
+        // ----------------------------------------------------------------
+        // 血色フィルタ
+        capture.ruddyFilter();
 
-            // トーンアップフィルタ
-            captures[i].toneUpSkinFilter();
+        // トーンアップフィルタ
+        capture.toneUpSkinFilter();
 
-            // 美肌フィルタ
-            captures[i].beautifulSkinFilter();
+        // 美肌フィルタ
+        capture.beautifulSkinFilter();
 
-            // ガンマ調整
-            captures[i].gammaFilter(1.15);
-
-
-            // ----------------------------------------------------------------
-            // 描画lutMat
-            // ----------------------------------------------------------------
-            // モニター表示
-            std::string windowName = MONITOR_WINDOW_NAME;
-
-            std::ostringstream ossDeviceId;
-            ossDeviceId << i;
-            windowName += "[FRAME_ID_BUFFER_MAIN(0x01), dev=" + ossDeviceId.str() + "]";
-
-            cv::imshow(windowName, captures[i].getFrame());
+        // ガンマ調整
+        capture.gammaFilter(1.15);
 
 
-            std::string windowNameRaw = MONITOR_WINDOW_NAME;
-            windowNameRaw += " [FRAME_ID_INPUT(0x00), dev=" + ossDeviceId.str() + "]";
-
-            cv::imshow(windowNameRaw, captures[i].getFrame(FRAME_ID_INPUT));
-
-            captures[i].getFrame().copyTo(masterFrame);
-
-        }
-
-
-        // マスターフレーム表示
-        // cv::imshow("VIDUX - Monitor (Mixed_Master)", masterFrame);
-
-        // r = sink.write((const char*)masterFrame.data, masterFrame.cols * masterFrame.rows * masterFrame.channels());
+        // ----------------------------------------------------------------
+        // 描画
+        // ----------------------------------------------------------------
+        cv::imshow(windowNameInput, capture.getFrame(FRAME_ID_INPUT));
+        cv::imshow(windowNameBufferMain, capture.getFrame());
 
 
         // ----------------------------------------------------------------
@@ -113,18 +88,19 @@ int main(int argc, char *argv[])
         }
         else if(key == 's')
         {
-            cv::imwrite("vidux-master.jpg", captures[0].getFrame());
+            cv::imwrite("capture.jpg", capture.getFrame());
         }
     }
 
+    // ----------------------------------------------------------------
+    // クローズ処理
+    // ----------------------------------------------------------------
     // Window を開放
     cv::destroyAllWindows();
 
     // キャプチャデバイスを開放
-    for (int i = 0; i < devices; i++)
-    {
-        captures[i].closeDevice();
-    }
+    capture.closeDevice();
+
 
     return 0;
 
