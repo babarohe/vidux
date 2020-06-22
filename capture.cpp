@@ -76,7 +76,8 @@ void Capture::noiseReduction()
  */
 void Capture::read()
 {
-    cap->read(frame);
+    cap->read(frameRaw);
+    frameRaw.copyTo(frame);
 }
 
 
@@ -89,4 +90,23 @@ void Capture::read()
 cv::Mat Capture::getFrame()
 {
     return frame;
+}
+
+
+/**
+ * @fn
+ * Get a frame
+ * @param void
+ * @return cv::Mat
+ */
+cv::Mat Capture::getFrame(int frameId)
+{
+    if (frameId == FRAME_ID_PROCESSED)
+    {
+        return frame;
+    }
+    else if (frameId == FRAME_ID_RAW_INPUT)
+    {
+        return frameRaw;
+    }
 }

@@ -14,35 +14,41 @@ int main(int argc, char *argv[])
 
     // Open the capture device
     Capture captures[MAX_CAPTURE_DEVICE];
+    int devices = 0;
 
     if(captures[0].initDevice(2))
     {
         // if open failed it exit
         return -1;
     }
+    devices++;
 
-    if(captures[1].initDevice(0))
-    {
-        // if open failed it exit
-        return -1;
-    }
+    // if(captures[1].initDevice(2))
+    // {
+    //     // if open failed it exit
+    //     return -1;
+    // }
+    // devices++;
 
-    int devices = 2;
 
 
     while(true)
     {
         for (int i = 0; i < devices; i++)
         {
+            // ----------------------------------------------------------------
+            // ビデオ取得
+            // ----------------------------------------------------------------
             captures[i].read();
-            // cv::imshow("before", captures[i].getFrame());
 
 
             // ----------------------------------------------------------------
             // ビデオフィルタ
             // ----------------------------------------------------------------
-            // ノイズリダクション
+            // 美肌フィルタ
             captures[i].beautifulSkinFilter();
+
+            // ガンマ調整
             captures[i].gammaFilter(1.1);
 
 
@@ -54,9 +60,16 @@ int main(int argc, char *argv[])
 
             std::ostringstream ossDeviceId;
             ossDeviceId << i;
-            windowName += "(Device: " + ossDeviceId.str() + ")";
+            windowName += "(Device " + ossDeviceId.str() + ")";
 
             cv::imshow(windowName, captures[i].getFrame());
+
+
+            std::string windowNameRaw = MONITOR_WINDOW_NAME;
+            windowNameRaw += "(Raw " + ossDeviceId.str() + ")";
+
+            cv::imshow(windowNameRaw, captures[i].getFrame(FRAME_ID_RAW_INPUT));
+
 
 
         }
