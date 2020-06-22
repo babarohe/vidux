@@ -41,8 +41,9 @@ public:
     // filters
     void gammaFilter(double);
     void beautifulSkinFilter();
+    void toneUpSkinFilter();
     void ruddyFilter();
-    void specificHueFilter();
+    void specificHueFilter(double, double, int, int, int, int, double, int, int, bool = false);
     void noiseReductionFilter();
 
     // getter

@@ -44,6 +44,9 @@ int main(int argc, char *argv[])
     cv::Mat masterFrame;
     // int r = sink.init(masterFrame.cols, masterFrame.rows, masterFrame.channels() == 1 ? v4l2sink::GRAY: v4l2sink::RGB);
 
+    cv::namedWindow("ruddyFilter()");
+    cv::namedWindow("toneUpSkinFilter()");
+
 
     while(true)
     {
@@ -58,11 +61,14 @@ int main(int argc, char *argv[])
             // ----------------------------------------------------------------
             // ビデオフィルタ
             // ----------------------------------------------------------------
-            // 美肌フィルタ
-            captures[i].beautifulSkinFilter();
-
             // 血色フィルタ
             captures[i].ruddyFilter();
+
+            // トーンアップフィルタ
+            captures[i].toneUpSkinFilter();
+
+            // 美肌フィルタ
+            captures[i].beautifulSkinFilter();
 
             // ガンマ調整
             captures[i].gammaFilter(1.15);
@@ -92,7 +98,7 @@ int main(int argc, char *argv[])
 
 
         // マスターフレーム表示
-        cv::imshow("VIDUX - Monitor (Mixed_Master)", masterFrame);
+        // cv::imshow("VIDUX - Monitor (Mixed_Master)", masterFrame);
 
         // r = sink.write((const char*)masterFrame.data, masterFrame.cols * masterFrame.rows * masterFrame.channels());
 

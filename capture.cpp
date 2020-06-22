@@ -57,6 +57,8 @@ void Capture::beautifulSkinFilter()
 
 }
 
+void do_nothing(int size, void*){}
+
 /**
  * @fn
  * Ruddy filter
@@ -65,13 +67,146 @@ void Capture::beautifulSkinFilter()
  */
 void Capture::ruddyFilter()
 {
-    // 血色感出すフィルター
-    specificHueFilter();
+    // Adjust value
+    static double adjustHue = 7;
+    static int _intAdjustHue = 0;
+    static int adjustLightness = -20;
+    static int adjustSaturation = 74;
+
+    // Color range specification
+    static double centerHue = 9.0;
+    static double hueRange = 7.0;
+    static int _intCenterHue = centerHue;
+    static int _intHueRange = hueRange;
+
+    static int minLightness = 42;
+    static int maxLightness = 130;
+
+    static int minSaturation = 117;
+    static int maxSaturation = 255;
+    static int showRangeFlag = 0;
+
+    cv::createTrackbar("adjustHue", "ruddyFilter()", &_intAdjustHue, 255, do_nothing);
+    // cv::createTrackbar("adjustLightness", "ruddyFilter()", &adjustLightness, 255, do_nothing);
+    cv::createTrackbar("adjustSaturation", "ruddyFilter()", &adjustSaturation, 255, do_nothing);
+
+    cv::createTrackbar("centerHue", "ruddyFilter()", &_intCenterHue, 360, do_nothing);
+    cv::createTrackbar("hueRange", "ruddyFilter()", &_intHueRange, 360, do_nothing);
+    cv::createTrackbar("minLightness", "ruddyFilter()", &minLightness, 255, do_nothing);
+    cv::createTrackbar("maxLightness", "ruddyFilter()", &maxLightness, 255, do_nothing);
+    cv::createTrackbar("minSaturation", "ruddyFilter()", &minSaturation, 255, do_nothing);
+    cv::createTrackbar("maxSaturation", "ruddyFilter()", &maxSaturation, 255, do_nothing);
+
+    cv::createTrackbar("showRangeFlag", "ruddyFilter()", &showRangeFlag, 1, do_nothing);
+
+
+    adjustHue = _intAdjustHue;
+    centerHue = _intCenterHue;
+    hueRange = _intHueRange;
+
+    specificHueFilter(centerHue,
+        hueRange,
+        minLightness,
+        maxLightness,
+        minSaturation,
+        maxSaturation,
+        adjustHue,
+        adjustLightness,
+        adjustSaturation,
+        showRangeFlag);
 
 }
 
 
-void Capture::specificHueFilter()
+/**
+ * @fn
+ * Tone up skin filter
+ * @param void
+ * @return void
+ */
+void Capture::toneUpSkinFilter()
+{
+    // Adjust value
+    static double adjustHue = 0;
+    static int _intAdjustHue = 0;
+    static int adjustLightness = 6;
+    static int adjustSaturation = 0;
+
+    // Color range specification
+    static double centerHue = 20.0;
+    static double hueRange = 70.0;
+    static int _intCenterHue = centerHue;
+    static int _intHueRange = hueRange;
+
+    static int minLightness = 50;
+    static int maxLightness = 255;
+
+    static int minSaturation = 38;
+    static int maxSaturation = 255;
+    static int showRangeFlag = 0;
+
+    cv::createTrackbar("adjustHue", "toneUpSkinFilter()", &_intAdjustHue, 255, do_nothing);
+    cv::createTrackbar("adjustLightness", "toneUpSkinFilter()", &adjustLightness, 255, do_nothing);
+    cv::createTrackbar("adjustSaturation", "toneUpSkinFilter()", &adjustSaturation, 255, do_nothing);
+
+    cv::createTrackbar("centerHue", "toneUpSkinFilter()", &_intCenterHue, 360, do_nothing);
+    cv::createTrackbar("hueRange", "toneUpSkinFilter()", &_intHueRange, 360, do_nothing);
+    cv::createTrackbar("minLightness", "toneUpSkinFilter()", &minLightness, 255, do_nothing);
+    cv::createTrackbar("maxLightness", "toneUpSkinFilter()", &maxLightness, 255, do_nothing);
+    cv::createTrackbar("minSaturation", "toneUpSkinFilter()", &minSaturation, 255, do_nothing);
+    cv::createTrackbar("maxSaturation", "toneUpSkinFilter()", &maxSaturation, 255, do_nothing);
+
+    cv::createTrackbar("showRangeFlag", "toneUpSkinFilter()", &showRangeFlag, 1, do_nothing);
+
+
+    adjustHue = _intAdjustHue;
+    centerHue = _intCenterHue;
+    hueRange = _intHueRange;
+
+
+    specificHueFilter(centerHue,
+        hueRange,
+        minLightness,
+        maxLightness,
+        minSaturation,
+        maxSaturation,
+        adjustHue,
+        adjustLightness,
+        adjustSaturation,
+        showRangeFlag);
+
+}
+
+/**
+ * @fn
+ * Ruddy filter
+ *
+ * * Color range specification
+ * @param double centerHue [0.0 ~ 360.0]
+ * @param double hueRange [0.0 ~ 180.0]
+ * @param int minLightness [0 ~ 255]
+ * @param int maxLightness [0 ~ 255]
+ * @param int minSaturation [0 ~ 255]
+ * @param int maxSaturation [0 ~ 255]
+ *
+ * Adjust value
+ * @param double adjustHue [-180.0 ~ 180.0]
+ * @param int adjustLightness [-255 ~ 255]
+ * @param int adjustSaturation [-255 ~ 255]
+ *
+ * @return void
+ */
+void Capture::specificHueFilter(
+    double centerHue,
+    double hueRange,
+    int minLightness,
+    int maxLightness,
+    int minSaturation,
+    int maxSaturation,
+    double adjustHue,
+    int adjustLightness,
+    int adjustSaturation,
+    bool showRangeFlag)
 {
     // Convert color to HLS color
     cv::cvtColor(bufferMainFrame, bufferTemporaryFrame, cv::COLOR_BGR2HLS);
@@ -79,22 +214,8 @@ void Capture::specificHueFilter()
     int cols = bufferTemporaryFrame.cols;
     int rows = bufferTemporaryFrame.rows;
 
-    int adjustHue = 0;
-    int adjustLightness = -30;
-    int adjustSaturation = 0;
-
-    double centerHue = 7.0;
-    double hueRange = 12.0;
-
-    double minHue = centerHue - hueRange / 2.0;
-    double maxHue = centerHue + hueRange / 2.0;
-
-    int minLightness = 20;
-    int maxLightness = 255;
-
-    int minSaturation = 0;
-    int maxSaturation = 200;
-
+    int minHue = (int)((centerHue - hueRange / 2.0) / 2.0);
+    int maxHue = (int)((centerHue + hueRange / 2.0) / 2.0);
 
     // Mat to vector
     std::vector<cv::Mat> hlsChannels;
@@ -105,27 +226,38 @@ void Capture::specificHueFilter()
     int lightnessValue;
     int saturationValue;
 
-    for (int row = 0; row < rows; row++) {
+    for (int row = 0; row < rows; row++)
+    {
         // Horizontal scan
-        for (int col = 0; col < cols; col++) {
+        for (int col = 0; col < cols; col++)
+        {
             // Vertical scan
             hueValue = static_cast<int>(hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col));
             lightnessValue = static_cast<int>(hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col));
             saturationValue = static_cast<int>(hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col));
 
 
-            if (((minHue <= hueValue) && (hueValue <= maxHue))) {
+            if (((minHue <= hueValue) && (hueValue <= maxHue)))
+            {
                 // Inrange hue
-                if (((minLightness <= lightnessValue) && (lightnessValue <= maxLightness))) {
+                if (((minLightness <= lightnessValue) && (lightnessValue <= maxLightness)))
+                {
                     // Inrange Lightness
-                    if (((minSaturation <= saturationValue) && (saturationValue <= maxSaturation))) {
-                        // hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(hueValue + adjustHue, 0, HLS_HUE_MAX_VALUE);
-                        // hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(lightnessValue + adjustLightness, 0, HLS_LIGHTNESS_MAX_VALUE);
-                        // hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(saturationValue + adjustSaturation, 0, HLS_SATURATION_MAX_VALUE);
+                    if (((minSaturation <= saturationValue) && (saturationValue <= maxSaturation)))
+                    {
+                        if (!showRangeFlag)
+                        {
+                            hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(hueValue + (int)(adjustHue / 2.0) % HLS_HUE_MAX_VALUE , 0, HLS_HUE_MAX_VALUE);
+                            hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(lightnessValue + adjustLightness, 0, HLS_LIGHTNESS_MAX_VALUE);
+                            hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(saturationValue + adjustSaturation, 0, HLS_SATURATION_MAX_VALUE);
+                        }
+                        else
+                        {
+                            hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(45, 0, HLS_HUE_MAX_VALUE);
+                            hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(127, 0, HLS_LIGHTNESS_MAX_VALUE);
+                            hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(255, 0, HLS_SATURATION_MAX_VALUE);
 
-                        hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(45, 0, HLS_HUE_MAX_VALUE);
-                        hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(127, 0, HLS_LIGHTNESS_MAX_VALUE);
-                        hlsChannels[HLS_CHANNEL_SATURATION].at<uchar>(row, col) = _utilCutRange(255, 0, HLS_SATURATION_MAX_VALUE);
+                        }
                     }
                 }
             }
