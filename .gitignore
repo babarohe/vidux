@@ -35,6 +35,11 @@
 build/
 vidux
 
+# Capture files
+*.jpg
+*.jpeg
+*.png
+
 # User defined
 .vscode/
 README.html
