@@ -35,6 +35,9 @@
 build/
 lib/
 vidux
+vidux_capture
+vidux_mixer
+vidux_selector
 
 # Capture files
 *.jpg
