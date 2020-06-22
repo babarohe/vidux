@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
             captures[i].beautifulSkinFilter();
 
             // ガンマ調整
-            captures[i].gammaFilter(1.1);
+            captures[i].gammaFilter(2.0);
 
 
             // ----------------------------------------------------------------
@@ -73,15 +73,15 @@ int main(int argc, char *argv[])
 
             std::ostringstream ossDeviceId;
             ossDeviceId << i;
-            windowName += "(Device " + ossDeviceId.str() + ")";
+            windowName += "[FRAME_ID_BUFFER_MAIN(0x01), dev=" + ossDeviceId.str() + "]";
 
             cv::imshow(windowName, captures[i].getFrame());
 
 
             std::string windowNameRaw = MONITOR_WINDOW_NAME;
-            windowNameRaw += "(Raw " + ossDeviceId.str() + ")";
+            windowNameRaw += " [FRAME_ID_INPUT(0x00), dev=" + ossDeviceId.str() + "]";
 
-            cv::imshow(windowNameRaw, captures[i].getFrame(FRAME_ID_RAW_INPUT));
+            cv::imshow(windowNameRaw, captures[i].getFrame(FRAME_ID_INPUT));
 
             captures[i].getFrame().copyTo(masterFrame);
 
@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 
 
         // マスターフレーム表示
-        cv::imshow("VIDUX - Monitor(Master)", masterFrame);
+        cv::imshow("VIDUX - Monitor (Mixed_Master)", masterFrame);
 
         // r = sink.write((const char*)masterFrame.data, masterFrame.cols * masterFrame.rows * masterFrame.channels());
 

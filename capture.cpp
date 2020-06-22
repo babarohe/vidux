@@ -20,51 +20,11 @@ bool Capture::initDevice(int index)
     return !cap->isOpened();
 }
 
-void Capture::gammaFilter(double gamma)
-{
-    uchar lut[256];
-
-    for (int i = 0; i < 256; i++)
-    {
-        lut[i] = (int)(pow((double)i / 255.0, 1.0 / gamma) * 255.0);
-    }
-
-    // Convart lockup table
-    cv::LUT(frame, cv::Mat(1, 256, CV_8UC1, lut), frame);
-
-}
-
 
 void Capture::closeDevice()
 {
     cap->release();
     delete(cap);
-}
-
-/**
- * @fn
- * Beautiful skin filter
- * @param void
- * @return void
- */
-void Capture::beautifulSkinFilter()
-{
-    // 美肌フィルタ
-    cv::bilateralFilter(frame, frameTmp, 4, 70, 6, 4);
-    cv::cvtColor(frameTmp, frame, cv::COLOR_RGB2RGBA);
-}
-
-
-/**
- * @fn
- * Beautiful skin filter
- * @param void
- * @return void
- */
-void Capture::noiseReduction()
-{
-    // 美肌フィルタ
-    cv::medianBlur(frame, frame, 3);
 }
 
 
@@ -76,10 +36,61 @@ void Capture::noiseReduction()
  */
 void Capture::read()
 {
-    cap->read(frameRaw);
-    frameRaw.copyTo(frame);
+    // Read frame from capture
+    cap->read(inputFrame);
+    inputFrame.copyTo(bufferMainFrame);
 }
 
+/**
+ * @fn
+ * Beautiful skin filter
+ * @param void
+ * @return void
+ */
+void Capture::beautifulSkinFilter()
+{
+    // Execute bilateral filter
+    cv::bilateralFilter(bufferMainFrame, bufferTemporaryFrame, 4, 72, 6, 4);
+
+    // Copy from Temporary buffer
+    bufferTemporaryFrame.copyTo(bufferMainFrame);
+
+    // cv::cvtColor(bufferTemporaryFrame, bufferMainFrame, cv::COLOR_RGB2RGBA);
+
+}
+
+
+/**
+ * @fn
+ * Noise reduction filter
+ * @param void
+ * @return void
+ */
+void Capture::noiseReductionFilter()
+{
+    cv::medianBlur(bufferMainFrame, bufferMainFrame, 3);
+}
+
+
+/**
+ * @fn
+ * Gamma filter
+ * @param void
+ * @return void
+ */
+void Capture::gammaFilter(double gamma)
+{
+    uchar lut[256];
+
+    for (int i = 0; i < 256; i++)
+    {
+        lut[i] = (int)(pow((double)i / 255.0, 1.0 / gamma) * 255.0);
+    }
+
+    // Convart lockup table
+    cv::LUT(bufferMainFrame, cv::Mat(1, 256, CV_8UC1, lut), bufferMainFrame);
+
+}
 
 /**
  * @fn
@@ -89,7 +100,7 @@ void Capture::read()
  */
 cv::Mat Capture::getFrame()
 {
-    return frame;
+    return bufferTemporaryFrame;
 }
 
 
@@ -101,12 +112,20 @@ cv::Mat Capture::getFrame()
  */
 cv::Mat Capture::getFrame(int frameId)
 {
-    if (frameId == FRAME_ID_PROCESSED)
+    if (frameId == FRAME_ID_INPUT)
     {
-        return frame;
+        return inputFrame;
     }
-    else if (frameId == FRAME_ID_RAW_INPUT)
+    else if (frameId == FRAME_ID_BUFFER_MAIN)
     {
-        return frameRaw;
+        return bufferMainFrame;
+    }
+    else if (frameId == FRAME_ID_BUFFER_TEMPORARY)
+    {
+        return bufferTemporaryFrame;
+    }
+    else if (frameId == FRAME_ID_OUTPUT)
+    {
+        return bufferTemporaryFrame;
     }
 }
