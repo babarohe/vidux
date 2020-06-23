@@ -13,7 +13,7 @@ private:
 public:
     void init();
     void main();
-}
+};
 
 #endif
 
