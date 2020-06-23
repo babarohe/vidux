@@ -13,7 +13,6 @@ int main(int argc, char *argv[])
 
     // Open the capture device
     Capture capture;
-    int devices = 0;
 
     if(capture.initDevice(index))
     {
