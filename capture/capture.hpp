@@ -21,6 +21,34 @@
 #define HLS_SATURATION_MAX_VALUE 255
 
 
+typedef struct
+{
+    // Hue
+    double centerHue;
+    double hueRange;
+
+    // Lightness
+    int minLightness;
+    int maxLightness;
+
+    // Saturation
+    int minSaturation;
+    int maxSaturation;
+
+    // flag
+    int showDetectionRangeFlag = 0;
+
+} hlsColorDetection_t;
+
+typedef struct
+{
+    double adjustHue;
+    int adjustLightness;
+    int adjustSaturation;
+
+} hlsAdjustColor_t;
+
+
 class Capture
 {
 private:
@@ -32,6 +60,14 @@ private:
     int _utilCutRange(int, int, int);
 
 public:
+    // ruddyFilter() params
+    hlsColorDetection_t ruddyFilterColorDetection;
+    hlsAdjustColor_t ruddyFilterAdjustColor;
+
+    // toneUpSkinFilter() params
+    hlsColorDetection_t toneUpSkinFilterColorDetection;
+    hlsAdjustColor_t toneUpSkinFilterAdjustColor;
+
     // Basic functions
     bool initDevice(int);
     void closeDevice();
@@ -43,7 +79,7 @@ public:
     void beautifulSkinFilter();
     void toneUpSkinFilter();
     void ruddyFilter();
-    void specificHueFilter(double, double, int, int, int, int, double, int, int, bool = false);
+    void colorHlsSpecificFilter(double, double, int, int, int, int, double, int, int, bool = false);
     void noiseReductionFilter();
 
     // getter

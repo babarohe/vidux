@@ -84,7 +84,7 @@ void Capture::ruddyFilter()
 
     static int minSaturation = 117;
     static int maxSaturation = 255;
-    static int showRangeFlag = 0;
+    static int showDetectionRangeFlag = 0;
 
     cv::createTrackbar("adjustHue", "ruddyFilter()", &_intAdjustHue, 255, do_nothing);
     // cv::createTrackbar("adjustLightness", "ruddyFilter()", &adjustLightness, 255, do_nothing);
@@ -97,7 +97,7 @@ void Capture::ruddyFilter()
     cv::createTrackbar("minSaturation", "ruddyFilter()", &minSaturation, 255, do_nothing);
     cv::createTrackbar("maxSaturation", "ruddyFilter()", &maxSaturation, 255, do_nothing);
 
-    cv::createTrackbar("showRangeFlag", "ruddyFilter()", &showRangeFlag, 1, do_nothing);
+    cv::createTrackbar("showDetectionRangeFlag", "ruddyFilter()", &showDetectionRangeFlag, 1, do_nothing);
 
 
     adjustHue = _intAdjustHue;
@@ -113,7 +113,7 @@ void Capture::ruddyFilter()
         adjustHue,
         adjustLightness,
         adjustSaturation,
-        showRangeFlag);
+        showDetectionRangeFlag);
 
 }
 
@@ -143,7 +143,7 @@ void Capture::toneUpSkinFilter()
 
     static int minSaturation = 38;
     static int maxSaturation = 255;
-    static int showRangeFlag = 0;
+    static int showDetectionRangeFlag = 0;
 
     cv::createTrackbar("adjustHue", "toneUpSkinFilter()", &_intAdjustHue, 255, do_nothing);
     cv::createTrackbar("adjustLightness", "toneUpSkinFilter()", &adjustLightness, 255, do_nothing);
@@ -156,7 +156,7 @@ void Capture::toneUpSkinFilter()
     cv::createTrackbar("minSaturation", "toneUpSkinFilter()", &minSaturation, 255, do_nothing);
     cv::createTrackbar("maxSaturation", "toneUpSkinFilter()", &maxSaturation, 255, do_nothing);
 
-    cv::createTrackbar("showRangeFlag", "toneUpSkinFilter()", &showRangeFlag, 1, do_nothing);
+    cv::createTrackbar("showDetectionRangeFlag", "toneUpSkinFilter()", &showDetectionRangeFlag, 1, do_nothing);
 
 
     adjustHue = _intAdjustHue;
@@ -173,7 +173,7 @@ void Capture::toneUpSkinFilter()
         adjustHue,
         adjustLightness,
         adjustSaturation,
-        showRangeFlag);
+        showDetectionRangeFlag);
 
 }
 
@@ -206,7 +206,7 @@ void Capture::specificHueFilter(
     double adjustHue,
     int adjustLightness,
     int adjustSaturation,
-    bool showRangeFlag)
+    bool showDetectionRangeFlag)
 {
     // Convert color to HLS color
     cv::cvtColor(bufferMainFrame, bufferTemporaryFrame, cv::COLOR_BGR2HLS);
@@ -245,7 +245,7 @@ void Capture::specificHueFilter(
                     // Inrange Lightness
                     if (((minSaturation <= saturationValue) && (saturationValue <= maxSaturation)))
                     {
-                        if (!showRangeFlag)
+                        if (!showDetectionRangeFlag)
                         {
                             hlsChannels[HLS_CHANNEL_HUE].at<uchar>(row, col) = _utilCutRange(hueValue + (int)(adjustHue / 2.0) % HLS_HUE_MAX_VALUE , 0, HLS_HUE_MAX_VALUE);
                             hlsChannels[HLS_CHANNEL_LIGHTNESS].at<uchar>(row, col) = _utilCutRange(lightnessValue + adjustLightness, 0, HLS_LIGHTNESS_MAX_VALUE);
@@ -340,6 +340,7 @@ cv::Mat Capture::getFrame(int frameId)
     {
         return bufferMainFrame;
     }
+    return cv::Mat();
 }
 
 
