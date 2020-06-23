@@ -30,6 +30,53 @@ void Capture::closeDevice()
 
 /**
  * @fn
+ * Initialize filters
+ * @return void
+ */
+
+void Capture::initFilters()
+{
+    // ----------------------------------------------------------------
+    // ruddyFilter()
+    // ----------------------------------------------------------------
+    // Color detection
+    ruddyFilterColorDetection.centerHue = 9.0;
+    ruddyFilterColorDetection.hueRange = 7.0;
+    ruddyFilterColorDetection.minLightness = 42;
+    ruddyFilterColorDetection.maxLightness = 130;
+    ruddyFilterColorDetection.minSaturation = 117;
+    ruddyFilterColorDetection.maxSaturation = 255;
+    ruddyFilterColorDetection.showDetectionRangeFlag = 0;
+
+    // Adjust value
+    ruddyFilterAdjustColor.adjustHue = 7;
+    ruddyFilterAdjustColor.adjustLightness = -20;
+    ruddyFilterAdjustColor.adjustSaturation = 74;
+
+
+    // ----------------------------------------------------------------
+    // toneUpSkinFilter()
+    // ----------------------------------------------------------------
+    // Color detection
+    toneUpSkinFilterColorDetection.centerHue = 20.0;
+    toneUpSkinFilterColorDetection.hueRange = 70.0;
+    toneUpSkinFilterColorDetection.minLightness = 50;
+    toneUpSkinFilterColorDetection.maxLightness = 255;
+    toneUpSkinFilterColorDetection.minSaturation = 38;
+    toneUpSkinFilterColorDetection.maxSaturation = 255;
+    toneUpSkinFilterColorDetection.showDetectionRangeFlag = 0;
+
+    // Adjust value
+    toneUpSkinFilterAdjustColor.adjustHue = 0;
+    toneUpSkinFilterAdjustColor.adjustLightness = 6;
+    toneUpSkinFilterAdjustColor.adjustSaturation = 0;
+
+    return;
+}
+
+
+/**
+ * @fn
  * Read capture device
  * @param void
  * @return void
@@ -67,53 +114,7 @@ void do_nothing(int size, void*){}
  */
 void Capture::ruddyFilter()
 {
-    // Adjust value
-    static double adjustHue = 7;
-    static int _intAdjustHue = 0;
-    static int adjustLightness = -20;
-    static int adjustSaturation = 74;
-
-    // Color range specification
-    static double centerHue = 9.0;
-    static double hueRange = 7.0;
-    static int _intCenterHue = centerHue;
-    static int _intHueRange = hueRange;
-
-    static int minLightness = 42;
-    static int maxLightness = 130;
-
-    static int minSaturation = 117;
-    static int maxSaturation = 255;
-    static int showDetectionRangeFlag = 0;
-
-    cv::createTrackbar("adjustHue", "ruddyFilter()", &_intAdjustHue, 255, do_nothing);
-    // cv::createTrackbar("adjustLightness", "ruddyFilter()", &adjustLightness, 255, do_nothing);
-    cv::createTrackbar("adjustSaturation", "ruddyFilter()", &adjustSaturation, 255, do_nothing);
-
-    cv::createTrackbar("centerHue", "ruddyFilter()", &_intCenterHue, 360, do_nothing);
-    cv::createTrackbar("hueRange", "ruddyFilter()", &_intHueRange, 360, do_nothing);
-    cv::createTrackbar("minLightness", "ruddyFilter()", &minLightness, 255, do_nothing);
-    cv::createTrackbar("maxLightness", "ruddyFilter()", &maxLightness, 255, do_nothing);
-    cv::createTrackbar("minSaturation", "ruddyFilter()", &minSaturation, 255, do_nothing);
-    cv::createTrackbar("maxSaturation", "ruddyFilter()", &maxSaturation, 255, do_nothing);
-
-    cv::createTrackbar("showDetectionRangeFlag", "ruddyFilter()", &showDetectionRangeFlag, 1, do_nothing);
-
-
-    adjustHue = _intAdjustHue;
-    centerHue = _intCenterHue;
-    hueRange = _intHueRange;
-
-    specificHueFilter(centerHue,
-        hueRange,
-        minLightness,
-        maxLightness,
-        minSaturation,
-        maxSaturation,
-        adjustHue,
-        adjustLightness,
-        adjustSaturation,
-        showDetectionRangeFlag);
+    colorHlsSpecificFilter(ruddyFilterColorDetection, ruddyFilterAdjustColor);
 
 }
 
@@ -126,60 +127,13 @@ void Capture::ruddyFilter()
  */
 void Capture::toneUpSkinFilter()
 {
-    // Adjust value
-    static double adjustHue = 0;
-    static int _intAdjustHue = 0;
-    static int adjustLightness = 6;
-    static int adjustSaturation = 0;
-
-    // Color range specification
-    static double centerHue = 20.0;
-    static double hueRange = 70.0;
-    static int _intCenterHue = centerHue;
-    static int _intHueRange = hueRange;
-
-    static int minLightness = 50;
-    static int maxLightness = 255;
-
-    static int minSaturation = 38;
-    static int maxSaturation = 255;
-    static int showDetectionRangeFlag = 0;
-
-    cv::createTrackbar("adjustHue", "toneUpSkinFilter()", &_intAdjustHue, 255, do_nothing);
-    cv::createTrackbar("adjustLightness", "toneUpSkinFilter()", &adjustLightness, 255, do_nothing);
-    cv::createTrackbar("adjustSaturation", "toneUpSkinFilter()", &adjustSaturation, 255, do_nothing);
-
-    cv::createTrackbar("centerHue", "toneUpSkinFilter()", &_intCenterHue, 360, do_nothing);
-    cv::createTrackbar("hueRange", "toneUpSkinFilter()", &_intHueRange, 360, do_nothing);
-    cv::createTrackbar("minLightness", "toneUpSkinFilter()", &minLightness, 255, do_nothing);
-    cv::createTrackbar("maxLightness", "toneUpSkinFilter()", &maxLightness, 255, do_nothing);
-    cv::createTrackbar("minSaturation", "toneUpSkinFilter()", &minSaturation, 255, do_nothing);
-    cv::createTrackbar("maxSaturation", "toneUpSkinFilter()", &maxSaturation, 255, do_nothing);
-
-    cv::createTrackbar("showDetectionRangeFlag", "toneUpSkinFilter()", &showDetectionRangeFlag, 1, do_nothing);
-
-
-    adjustHue = _intAdjustHue;
-    centerHue = _intCenterHue;
-    hueRange = _intHueRange;
-
-
-    specificHueFilter(centerHue,
-        hueRange,
-        minLightness,
-        maxLightness,
-        minSaturation,
-        maxSaturation,
-        adjustHue,
-        adjustLightness,
-        adjustSaturation,
-        showDetectionRangeFlag);
+    colorHlsSpecificFilter(toneUpSkinFilterColorDetection, toneUpSkinFilterAdjustColor);
 
 }
 
 /**
  * @fn
- * Ruddy filter
+ * Color hls filter
  *
  * * Color range specification
  * @param double centerHue [0.0 ~ 360.0]
@@ -196,20 +150,24 @@ void Capture::toneUpSkinFilter()
  *
  * @return void
  */
-void Capture::specificHueFilter(
-    double centerHue,
-    double hueRange,
-    int minLightness,
-    int maxLightness,
-    int minSaturation,
-    int maxSaturation,
-    double adjustHue,
-    int adjustLightness,
-    int adjustSaturation,
-    bool showDetectionRangeFlag)
+void Capture::colorHlsSpecificFilter(hlsColorDetection_t hlsColorDetection, hlsAdjustColor_t hlsAdjustColor, bool showDetectionRangeFlag)
 {
+    double centerHue        = hlsColorDetection.centerHue;
+    double hueRange         = hlsColorDetection.hueRange;
+    int minLightness        = hlsColorDetection.minLightness;
+    int maxLightness        = hlsColorDetection.maxLightness;
+    int minSaturation       = hlsColorDetection.minSaturation;
+    int maxSaturation       = hlsColorDetection.maxSaturation;
+
+    double adjustHue        = hlsAdjustColor.adjustHue;
+    int adjustLightness     = hlsAdjustColor.adjustLightness;
+    int adjustSaturation    = hlsAdjustColor.adjustSaturation;
+
+
+
     // Convert color to HLS color
     cv::cvtColor(bufferMainFrame, bufferTemporaryFrame, cv::COLOR_BGR2HLS);
+
 
     int cols = bufferTemporaryFrame.cols;
     int rows = bufferTemporaryFrame.rows;

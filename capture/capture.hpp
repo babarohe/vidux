@@ -71,6 +71,7 @@ public:
     // Basic functions
     bool initDevice(int);
     void closeDevice();
+    void initFilters();
 
     void read();
 
@@ -79,7 +80,7 @@ public:
     void beautifulSkinFilter();
     void toneUpSkinFilter();
     void ruddyFilter();
-    void colorHlsSpecificFilter(double, double, int, int, int, int, double, int, int, bool = false);
+    void colorHlsSpecificFilter(hlsColorDetection_t, hlsAdjustColor_t, bool = false);
     void noiseReductionFilter();
 
     // getter
