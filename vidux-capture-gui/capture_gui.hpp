@@ -1,7 +1,7 @@
 #ifndef   CAPTURE_GUI_HPP
 #define   CAPTURE_GUI_HPP
 
-#include "gtk/gtk.h"
+#include <gtkmm.h>
 
 class ViduxCaptureGui
 {

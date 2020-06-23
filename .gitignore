@@ -47,3 +47,7 @@ vidux_selector
 # User defined
 .vscode/
 README.html
+
+# Glade files
+glade/#*.glade
+glade/*.glade~

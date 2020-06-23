@@ -66,10 +66,17 @@ chmod +x qt-opensource-linux-x64-5.14.2.run
 https://wiki.qt.io/Install_Qt_5_on_Ubuntu
 
 
-## Install Gtk3
+## Install gtkmm-3.0
 
 ```bash
-sudo apt install libgtk-3-dev
+# Ubuntu
+sudo apt install -y glade
+sudo apt install -y libgtk-3-dev
+sudo get install -y libgtkmm-3.0-dev
+
+# Mac
+brew install gtkmm3
+
 ```
 
 
@@ -86,11 +93,4 @@ brew install -v cmake
 brew install pkg-config
 brew tap homebrew/science
 brew install opencv
-```
-
-## Install Qt5 for macOS
-
-```bash
-
-
 ```

@@ -4,7 +4,7 @@
 PROGRAM = vidux_capture
 
 CC := g++
-CFLAGS := -Wall -Wextra -O3 $(shell pkg-config --cflags --libs opencv gtk+-3.0)
+CFLAGS := -Wall -Wextra -O3 $(shell pkg-config --cflags --libs opencv gtkmm-3.0)
 LDFLAGS :=
 SOURCES = vidux-capture-main.cpp capture/capture.cpp vidux-capture-gui/capture_gui.cpp
 
