@@ -81,6 +81,12 @@ void Capture::initFilters()
     beautifulSkinFilterParams.borderType = 4;
 
 
+    // ----------------------------------------------------------------
+    // cascade
+    // ----------------------------------------------------------------
+    cascadeEye = new cv::CascadeClassifier(HAACASCADE_EYE_PATH);
+    cascadeFace = new cv::CascadeClassifier(HAACASCADE_FACE_PATH);
+
     return;
 }
 
@@ -96,7 +102,11 @@ void Capture::read()
     // Read frame from capture
     cap->read(inputFrame);
     inputFrame.copyTo(bufferMainFrame);
+    cv::cvtColor(inputFrame, grayscaleFrame, cv::COLOR_BGR2GRAY);
+    cv::equalizeHist(grayscaleFrame, grayscaleFrame);
+
 }
+
 
 /**
  * @fn
@@ -271,6 +281,19 @@ void Capture::gammaFilter(double gamma)
     cv::LUT(bufferMainFrame, cv::Mat(1, 256, CV_8UC1, lut), bufferMainFrame);
 
 }
+
+void Capture::faceTracking()
+{
+    std::vector<cv::Rect> founds;
+
+    cascadeFace->detectMultiScale(grayscaleFrame, founds);
+    for (auto faceRect: founds) {
+        cv::rectangle(bufferMainFrame, faceRect, cv::Scalar(0, 0, 255), 2);
+    }
+}
+
+
+
 
 /**
  * @fn

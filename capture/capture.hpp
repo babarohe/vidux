@@ -21,6 +21,9 @@
 #define HLS_SATURATION_MAX_VALUE 255
 
 
+#define HAACASCADE_EYE_PATH "./resource/haarcascades/haarcascade_eye.xml"
+#define HAACASCADE_FACE_PATH "./resource/haarcascades/haarcascade_frontalface_alt.xml"
+
 typedef struct
 {
     // Hue
@@ -62,10 +65,18 @@ class Capture
 private:
     cv::VideoCapture *cap;
     cv::Mat inputFrame;
+    cv::Mat grayscaleFrame;
     cv::Mat bufferMainFrame;
     cv::Mat bufferTemporaryFrame;
     cv::Mat outputFrame;
+
+    cv::CascadeClassifier *cascadeEye;
+    cv::CascadeClassifier *cascadeFace;
+
+
     int _utilCutRange(int, int, int);
+
+
 
 public:
     // ruddyFilter() params
@@ -93,6 +104,11 @@ public:
     void ruddyFilter();
     void colorHlsSpecificFilter(hlsColorDetection_t, hlsAdjustColor_t, bool = false);
     void noiseReductionFilter();
+
+
+    // Tracking
+    void faceTracking();
+
 
     // getter
     cv::Mat getFrame();

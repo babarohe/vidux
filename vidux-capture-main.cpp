@@ -81,6 +81,8 @@ int main(int argc, char *argv[])
         // ガンマ調整
         capture.gammaFilter(1.15);
 
+        // 顔追尾
+        capture.faceTracking();
 
         // ----------------------------------------------------------------
         // 描画
