@@ -64,7 +64,7 @@ void Capture::initFilters()
     toneUpSkinFilterColorDetectionParams.maxLightness = 255;
     toneUpSkinFilterColorDetectionParams.minSaturation = 38;
     toneUpSkinFilterColorDetectionParams.maxSaturation = 255;
-    toneUpSkinFilterColorDetectionParams.showDetectionRangeFlag = 1;
+    toneUpSkinFilterColorDetectionParams.showDetectionRangeFlag = 0;
 
     // Adjust value
     toneUpSkinFilterAdjustColorParams.adjustHue = 0;

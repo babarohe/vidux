@@ -1,12 +1,18 @@
-#ifndef   CAPTURE_HPP
-#define   CAPTURE_HPP
+#ifndef   CAPTURE_GUI_HPP
+#define   CAPTURE_GUI_HPP
 
 #include "gtk/gtk.h"
 
-class GuiMain
+class ViduxCaptureGui
 {
-    // GtkWidget *window;
-    // GtkWidget *grid;
+private:
+    GtkWidget *window;
+    GtkWidget *grid;
+
+
+public:
+    void init();
+    void main();
 }
 
 #endif
