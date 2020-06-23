@@ -48,6 +48,14 @@ typedef struct
 
 } hlsAdjustColor_t;
 
+typedef struct
+{
+    int d;
+    double sigmaColor;
+    double sigmaSpace;
+    int borderType;
+
+} bilateralFilter_t;
 
 class Capture
 {
@@ -61,12 +69,15 @@ private:
 
 public:
     // ruddyFilter() params
-    hlsColorDetection_t ruddyFilterColorDetection;
-    hlsAdjustColor_t ruddyFilterAdjustColor;
+    hlsColorDetection_t ruddyFilterColorDetectionParams;
+    hlsAdjustColor_t ruddyFilterAdjustColorParams;
 
     // toneUpSkinFilter() params
-    hlsColorDetection_t toneUpSkinFilterColorDetection;
-    hlsAdjustColor_t toneUpSkinFilterAdjustColor;
+    hlsColorDetection_t toneUpSkinFilterColorDetectionParams;
+    hlsAdjustColor_t toneUpSkinFilterAdjustColorParams;
+
+    // beautifulSkinFilter() params
+    bilateralFilter_t beautifulSkinFilterParams;
 
     // Basic functions
     bool initDevice(int);

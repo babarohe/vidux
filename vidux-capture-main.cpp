@@ -20,6 +20,8 @@ int main(int argc, char *argv[])
         return -1;
     }
 
+    // Initialize video filter
+    capture.initFilters();
 
     // ----------------------------------------------------------------
     // ウィンドウ事前処理

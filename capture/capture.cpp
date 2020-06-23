@@ -40,36 +40,46 @@ void Capture::initFilters()
     // ruddyFilter()
     // ----------------------------------------------------------------
     // Color detection
-    ruddyFilterColorDetection.centerHue = 9.0;
-    ruddyFilterColorDetection.hueRange = 7.0;
-    ruddyFilterColorDetection.minLightness = 42;
-    ruddyFilterColorDetection.maxLightness = 130;
-    ruddyFilterColorDetection.minSaturation = 117;
-    ruddyFilterColorDetection.maxSaturation = 255;
-    ruddyFilterColorDetection.showDetectionRangeFlag = 0;
+    ruddyFilterColorDetectionParams.centerHue = 9.0;
+    ruddyFilterColorDetectionParams.hueRange = 7.0;
+    ruddyFilterColorDetectionParams.minLightness = 42;
+    ruddyFilterColorDetectionParams.maxLightness = 130;
+    ruddyFilterColorDetectionParams.minSaturation = 117;
+    ruddyFilterColorDetectionParams.maxSaturation = 255;
+    ruddyFilterColorDetectionParams.showDetectionRangeFlag = 0;
 
     // Adjust value
-    ruddyFilterAdjustColor.adjustHue = 7;
-    ruddyFilterAdjustColor.adjustLightness = -20;
-    ruddyFilterAdjustColor.adjustSaturation = 74;
+    ruddyFilterAdjustColorParams.adjustHue = 7;
+    ruddyFilterAdjustColorParams.adjustLightness = -20;
+    ruddyFilterAdjustColorParams.adjustSaturation = 74;
 
 
     // ----------------------------------------------------------------
     // toneUpSkinFilter()
     // ----------------------------------------------------------------
     // Color detection
-    toneUpSkinFilterColorDetection.centerHue = 20.0;
-    toneUpSkinFilterColorDetection.hueRange = 70.0;
-    toneUpSkinFilterColorDetection.minLightness = 50;
-    toneUpSkinFilterColorDetection.maxLightness = 255;
-    toneUpSkinFilterColorDetection.minSaturation = 38;
-    toneUpSkinFilterColorDetection.maxSaturation = 255;
-    toneUpSkinFilterColorDetection.showDetectionRangeFlag = 0;
+    toneUpSkinFilterColorDetectionParams.centerHue = 20.0;
+    toneUpSkinFilterColorDetectionParams.hueRange = 70.0;
+    toneUpSkinFilterColorDetectionParams.minLightness = 50;
+    toneUpSkinFilterColorDetectionParams.maxLightness = 255;
+    toneUpSkinFilterColorDetectionParams.minSaturation = 38;
+    toneUpSkinFilterColorDetectionParams.maxSaturation = 255;
+    toneUpSkinFilterColorDetectionParams.showDetectionRangeFlag = 1;
 
     // Adjust value
-    toneUpSkinFilterAdjustColor.adjustHue = 0;
-    toneUpSkinFilterAdjustColor.adjustLightness = 6;
-    toneUpSkinFilterAdjustColor.adjustSaturation = 0;
+    toneUpSkinFilterAdjustColorParams.adjustHue = 0;
+    toneUpSkinFilterAdjustColorParams.adjustLightness = 6;
+    toneUpSkinFilterAdjustColorParams.adjustSaturation = 0;
+
+
+    // ----------------------------------------------------------------
+    // beautifulSkinFilter()
+    // ----------------------------------------------------------------
+    beautifulSkinFilterParams.d = 4;
+    beautifulSkinFilterParams.sigmaColor = 72.0;
+    beautifulSkinFilterParams.sigmaSpace = 6.0;
+    beautifulSkinFilterParams.borderType = 4;
+
 
     return;
 }
@@ -100,7 +110,7 @@ void Capture::beautifulSkinFilter()
     bufferMainFrame.copyTo(bufferTemporaryFrame);
 
     // Execute bilateral filter
-    cv::bilateralFilter(bufferTemporaryFrame, bufferMainFrame, 4, 72, 6, 4);
+    cv::bilateralFilter(bufferTemporaryFrame, bufferMainFrame, beautifulSkinFilterParams.d, beautifulSkinFilterParams.sigmaColor, beautifulSkinFilterParams.sigmaSpace, beautifulSkinFilterParams.borderType);
 
 }
 
@@ -114,7 +124,7 @@ void do_nothing(int size, void*){}
  */
 void Capture::ruddyFilter()
 {
-    colorHlsSpecificFilter(ruddyFilterColorDetection, ruddyFilterAdjustColor);
+    colorHlsSpecificFilter(ruddyFilterColorDetectionParams, ruddyFilterAdjustColorParams, ruddyFilterColorDetectionParams.showDetectionRangeFlag);
 
 }
 
@@ -127,7 +137,7 @@ void Capture::ruddyFilter()
  */
 void Capture::toneUpSkinFilter()
 {
-    colorHlsSpecificFilter(toneUpSkinFilterColorDetection, toneUpSkinFilterAdjustColor);
+    colorHlsSpecificFilter(toneUpSkinFilterColorDetectionParams, toneUpSkinFilterAdjustColorParams, toneUpSkinFilterColorDetectionParams.showDetectionRangeFlag);
 
 }
 
