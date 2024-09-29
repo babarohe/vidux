@@ -94,3 +94,16 @@ brew install pkg-config
 brew tap homebrew/science
 brew install opencv
 ```
+
+## 動作
+
+### 美肌補正
+
+肌検出
+![肌検出](./docs/img01.png)
+
+選択的にLUTを適用
+![選択的にLUTを適用](./docs/img02.png)
+
+パラメータ調整
+![パラメータ調整](./docs/img03.png)
