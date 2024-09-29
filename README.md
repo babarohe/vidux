@@ -99,11 +99,14 @@ brew install opencv
 
 ### Beautiful skin correction
 
-Skin detection
+Skin detection  
+
 ![Skin detection](https://github.com/user-attachments/assets/f32ea59b-7b01-49dc-94d8-11a7b85cbd20)
 
-Apply LUT selectively
+Apply LUT selectively  
+
 ![Apply LUT selectively](https://github.com/user-attachments/assets/ddcb5df8-a93b-465f-aff1-867fa20fddb4)
 
-Parameter adjustment UI
+Parameter adjustment UI  
+
 ![Parameter adjustment UI](https://github.com/user-attachments/assets/08e783a7-3cab-453c-885a-5406e987cf79)
